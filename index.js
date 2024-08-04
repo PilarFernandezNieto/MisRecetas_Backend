@@ -1,28 +1,21 @@
 import express from "express"
+import dotenv from "dotenv"
+import colors from "@colors/colors"
+import { db } from "./config/db.js";
+import ingredientesRoutes from "./routes/ingredientesRoutes.js"
+
+dotenv.config()
 
 const app = express();
+db()
 
-app.get("/", (request, response) => {
-  const receta = {
-    id: 1,
-    nombre: "Lentejas con chorizo",
-    ingredientes: [
-        { 
-            id: 1, 
-            nombre: "Lentejas", 
-            cantidad: "200gr" },
-        {
-            id: 2,
-            nombre: "Chorizo",
-            cantidad: "100gr"
-        }
-    ]
-  };
-  response.json(receta);
-});
+app.use("/api/ingredientes", ingredientesRoutes)
+
 
 const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {
-  console.log(`El servidor se está ejectuando en el puerto ${PORT}`);
+  console.log(colors.blue(`El servidor se está ejectuando en el puerto ${PORT}`));
 });
+
+
