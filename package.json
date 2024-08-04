@@ -1,0 +1,19 @@
+{
+  "name": "misrecetas_backend",
+  "version": "1.0.0",
+  "description": "Backen para MisRecetas",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PilarFernandezNieto/MisRecetas_Backend.git"
+  },
+  "author": "Pilar Fernández Nieto",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PilarFernandezNieto/MisRecetas_Backend/issues"
+  },
+  "homepage": "https://github.com/PilarFernandezNieto/MisRecetas_Backend#readme"
+}
