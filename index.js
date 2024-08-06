@@ -7,6 +7,9 @@ import ingredientesRoutes from "./routes/ingredientesRoutes.js"
 dotenv.config()
 
 const app = express();
+
+app.use(express.json())
+
 db()
 
 app.use("/api/ingredientes", ingredientesRoutes)

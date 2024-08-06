@@ -1,11 +1,12 @@
 import express from "express"
-import { ingredientes } from "../data/ingredientes.js";
+import { creaIngrediente, getIngredientes, getIngredienteById, getIngredienteByNombre, updateIngrediente } from "../controllers/ingredientesController.js";
 
 const router = express.Router()
 
-router.get("/", (request, response) => {
-  
-    response.json(ingredientes);
-  });
+router.post("/", creaIngrediente);
+router.get("/", getIngredientes);
+router.get("/:id", getIngredienteById)
+router.get("/byNombre/:palabra", getIngredienteByNombre )
+router.put("/:id", updateIngrediente)
 
   export default router
