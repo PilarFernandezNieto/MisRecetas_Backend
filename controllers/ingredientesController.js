@@ -1,6 +1,7 @@
 import { ingredientes } from "../data/ingredientes.js";
 import mongoose from "mongoose";
 import Ingrediente from "../models/Ingrediente.js";
+import { validateObjectId, handleNotFoundError } from "../utils/index.js";
 
 const creaIngrediente = async (request, response) => {
   const { nombre } = request.body;
@@ -11,24 +12,20 @@ const creaIngrediente = async (request, response) => {
     });
   }
   try {
-    const ingrediente = new Ingrediente(request.body)
-    const result = await ingrediente.save()
+    const ingrediente = new Ingrediente(request.body);
+    const result = await ingrediente.save();
 
     response.json({
-        msg: "Ingrediente creado correctamente"
-    })
-    
-    
-  } catch (error) {
-    if(error.code === 11000){
-  
-     return response.status(400).json({
-      msg: error.errmsg
+      msg: "Ingrediente creado correctamente"
     });
-} else {
-    res.status(500).json({ msg: error.message });
-}
-    
+  } catch (error) {
+    if (error.code === 11000) {
+      return response.status(400).json({
+        msg: error.errmsg
+      });
+    } else {
+      res.status(500).json({ msg: error.message });
+    }
   }
 };
 
@@ -36,52 +33,61 @@ const getIngredientes = (request, response) => {
   response.json(ingredientes);
 };
 
-/* getIngredienteById*/ 
-const getIngredienteById = async  (request, response) => {
-    const { id } =  request.params
-    if(!mongoose.Types.ObjectId.isValid(id)){
-        const error = new Error("El id no es válido")
-        return response.status(400).json({msg: error.message})
-    }
-    const ingrediente = await Ingrediente.findById(id)
-    if(!ingrediente){
-      const error = new Error("El ingrediente no existe")
-      return response.status(404).json({msg: error.message})
-    }
-    response.json(ingrediente)
-    
-   
-}
+/* getIngredienteById*/
+const getIngredienteById = async (request, response) => {
+  const { id } = request.params;
 
+  if (validateObjectId(id, response)) return;
+
+  const ingrediente = await Ingrediente.findById(id);
+
+  if (!ingrediente) {
+    return handleNotFoundError("El ingrediente no existe", response);
+  }
+  response.json(ingrediente);
+};
 
 /* getIngredienteByNombre */
 const getIngredienteByNombre = async (request, response) => {
-    const { palabra } = request.params
+  const { palabra } = request.params;
 
-    try {
+  try {
     const ingredientes = await Ingrediente.find({
-        nombre: {
-            $regex: palabra,
-            $options: "i"
-        }
-    })
-    if(ingredientes.length === 0){
-      const error = new Error("No hay resultados")
-      return response.status(404).json({msg: error.message})
+      nombre: {
+        $regex: palabra,
+        $options: "i"
+      }
+    });
+    if (ingredientes.length === 0) {
+      const error = new Error("No hay resultados");
+      return response.status(404).json({ msg: error.message });
     }
-    response.json(ingredientes)
-  
-} catch(error){
+    response.json(ingredientes);
+  } catch (error) {
     console.log(error.message);
-    
-}
-    
-}
+  }
+};
 
 /* updateIngrediente */
 const updateIngrediente = async (request, response) => {
- 
-  
-}
+  const { id } = request.params;
+
+  if (validateObjectId(id, response)) return;
+
+  const ingrediente = await Ingrediente.findById(id);
+  if (!ingrediente) {
+    return handleNotFoundError("El ingrediente no existe", response);
+  }
+
+  ingrediente.nombre = request.body.nombre || ingrediente.nombre;
+  ingrediente.descripcion = request.body.descripcion || ingrediente.descripcion;
+
+  try {
+    await ingrediente.save();
+    response.json({ msg: "Ingrediente actualizado correctamente" });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export { creaIngrediente, getIngredientes, getIngredienteById, getIngredienteByNombre, updateIngrediente };
