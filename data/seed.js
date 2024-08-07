@@ -1,15 +1,15 @@
 import dotenv from "dotenv"
 import colors from "@colors/colors"
 import { db } from "../config/db.js"
-import Ingredientes from "../models/Ingrediente.js"
-import {ingredientes} from "./ingredientesData.js"
+import Recetas from "../models/Receta.js"
+import {recetas} from "./recetasData.js"
 
 dotenv.config()
 await db()
 
 async function seedDB() {
    try {
-    await Ingredientes.insertMany(ingredientes)
+    await Recetas.insertMany(recetas)
     console.log(colors.cyan.bold('Datos insertados correctamente'));
     process.exit(0) // process es una variable global de Node.js
     
@@ -23,7 +23,7 @@ async function seedDB() {
 
 async function clearDB(){
     try {
-        await Ingredientes.deleteMany()
+        await Recetas.deleteMany()
         console.log(colors.magenta.bold('Se eliminaron los datos'));
         process.exit(0) // process es una variable global de Node.js
         

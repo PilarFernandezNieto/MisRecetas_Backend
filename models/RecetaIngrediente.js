@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const recetaIngredientesSchema = mongoose.Schema({
     receta: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Receta',
         required: true
     },
     ingrediente: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Ingrediente',
         required: true
     },
@@ -17,6 +17,6 @@ const recetaIngredientesSchema = mongoose.Schema({
     }
 })
 
-const RecetaIngrediente = mongoose.model("RecetaIngrediente", recetasSchema)
+const RecetaIngrediente = mongoose.model("RecetaIngrediente", recetaIngredientesSchema)
 
 export default RecetaIngrediente
