@@ -1,4 +1,3 @@
-import { ingredientes } from "../data/ingredientesData.js";
 import Ingrediente from "../models/Ingrediente.js";
 import { validateObjectId, handleNotFoundError } from "../utils/index.js";
 
@@ -28,8 +27,14 @@ const creaIngrediente = async (request, response) => {
   }
 };
 
-const getIngredientes = (request, response) => {
-  response.json(ingredientes);
+const getIngredientes = async (request, response) => {
+  try {
+    const ingredientes = await Ingrediente.find()
+    response.json(ingredientes)
+  } catch (error) {
+    console.log(error);
+    
+  }
 };
 
 /* getIngredienteById*/

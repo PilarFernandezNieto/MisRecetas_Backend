@@ -3,11 +3,20 @@ import { creaIngrediente, getIngredientes, getIngredienteById, getIngredienteByN
 
 const router = express.Router()
 
-router.post("/", creaIngrediente);
-router.get("/", getIngredientes);
-router.get("/:id", getIngredienteById)
-router.get("/byNombre/:palabra", getIngredienteByNombre )
-router.put("/:id", updateIngrediente)
-router.delete("/:id", deleteIngrediente)
+
+
+router.route("/")
+  .post(creaIngrediente)
+  .get(getIngredientes)
+
+
+router.route("/:id")
+  .get(getIngredienteById)
+  .put(updateIngrediente)
+  .delete(deleteIngrediente)
+
+router.route("/byNombre/:palabra")
+  .get(getIngredienteByNombre )
+
 
   export default router
