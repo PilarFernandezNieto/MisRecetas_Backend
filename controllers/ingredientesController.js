@@ -1,5 +1,4 @@
-import { ingredientes } from "../data/ingredientes.js";
-import mongoose from "mongoose";
+import { ingredientes } from "../data/ingredientesData.js";
 import Ingrediente from "../models/Ingrediente.js";
 import { validateObjectId, handleNotFoundError } from "../utils/index.js";
 
@@ -90,4 +89,23 @@ const updateIngrediente = async (request, response) => {
   }
 };
 
-export { creaIngrediente, getIngredientes, getIngredienteById, getIngredienteByNombre, updateIngrediente };
+const deleteIngrediente = async (request, response) => {
+  const { id } = request.params;
+
+  if (validateObjectId(id, response)) return;
+
+  const ingrediente = await Ingrediente.findById(id);
+  if (!ingrediente) {
+    return handleNotFoundError("El ingrediente no existe", response);
+  }
+  try {
+    await ingrediente.deleteOne()
+    response.json({msg: "Ingrediente eliminado correctamente"})
+  } catch (error) {
+    console.log(error);
+    
+  }
+  
+}
+
+export { creaIngrediente, getIngredientes, getIngredienteById, getIngredienteByNombre, updateIngrediente, deleteIngrediente };
