@@ -102,4 +102,67 @@ const getRecetaByNombre = async (request, response) => {
     response.json(recetaConIngredientes);
 }
 
-export { creaReceta, getRecetas, getRecetaById, getRecetaByNombre };
+
+/* updateReceta */
+const updateReceta = async (request, response) => {
+    const { id } = request.params;
+
+    
+    const recetaConIngredientes = []
+
+    if (validateObjectId(id, response)) return;
+  
+    const receta = await Receta.findById(id)
+    if (!receta) {
+        return handleNotFoundError("No existe esa receta", response);
+      }
+    const recetaIngrediente = await RecetaIngrediente.find({receta: receta._id}).populate("ingrediente")
+    
+    const ingredientes = recetaIngrediente.map(ri => ({
+        nombre: ri.ingrediente.nombre,
+        cantidad: ri.cantidad
+    }))
+
+    recetaConIngredientes.push({
+        nombre: request.body.nombre || receta.nombre,
+        instrucciones: request.body.instrucciones || receta.instrucciones,
+        origen: request.body.origen || receta.origen,
+        ingredientes: request.body.ingredientes || ingredientes
+    })
+
+  
+    try {
+      await receta.save();
+      response.json({ msg: "Receta actualizada correctamente" });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const deleteReceta = async (request, response) => {
+    const { id } = request.params;
+  
+    if (validateObjectId(id, response)) return;
+  
+    const receta = await Receta.findById(id);
+    if (!receta) {
+      return handleNotFoundError("La receta no existe", response);
+    }
+    const recetaIngrediente = await RecetaIngrediente.find({receta: receta._id}).populate("ingrediente")
+    console.log(recetaIngrediente);
+
+    
+    try {
+
+      await RecetaIngrediente.deleteMany({receta: receta._id})
+      await receta.deleteOne()
+      response.json({msg: "La receta se ha eliminado correctamente"});
+    } catch (error) {
+      console.log(error);
+      
+    }
+    
+  }
+
+
+
+export { creaReceta, getRecetas, getRecetaById, getRecetaByNombre, updateReceta, deleteReceta };
