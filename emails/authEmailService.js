@@ -1,4 +1,21 @@
 import {createTransport} from "../config/nodemailer.js"
+import fs from "fs"
+
+// Leer el archivo HTML
+let htmlContent;
+try {
+    htmlContent = fs.readFileSync('../email-template.html', 'utf-8');
+} catch (err) {
+    console.error('Error al leer el archivo HTML:', err);
+    throw new Error('No se pudo leer el archivo HTML');
+}
+
+// Verifica que htmlContent no esté vacío o undefined
+if (!htmlContent) {
+    throw new Error('El contenido del HTML es undefined o vacío.');
+}
+
+
 
 export async function sendEmailVerification({ nombre, email, token }){
    const transporter = createTransport(
@@ -7,28 +24,14 @@ export async function sendEmailVerification({ nombre, email, token }){
     process.env.EMAIL_USER,
     process.env.EMAIL_PASS
    )
-
-   const info = await transporter.sendMail({
+// Reemplaza las variables en el HTML
+    const html = htmlContent.replace('${nombre}', nombre).replace('${token}', token);
+    const info = await transporter.sendMail({
     from: "MisRecetas <apreilmc@gmail.com>",
     to: email,
     subject: "MisRecetas - Confirma tu cuenta",
     text: "MisRecetas - Confirma tu cuenta",
-    html: `
-    <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
-        <div class="md:flex">
-            <div class="p-8">
-                <div class="uppercase tracking-wide text-sm text-amber-500 font-semibold">Hola, ${nombre}</div>
-                    <p class="block mt-1 text-lg leading-tight font-medium text-black">Confirma tu cuenta en MisRecetas</p>
-                    <p class="mt-2 text-gray-500">Gracias por registrarte en MisRecetas. Por favor, confirma tu cuenta haciendo click en el siguiente enlace:</p>
-                    <a href="http://localhost:4000/api/auth/verify/${token}" class="mt-4 bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
-                        Confirmar Cuenta
-                    </a>
-                    <p class
-                </div>
-            </div>
-        </div>
-    </div>
-`
+    html: html
    })
    console.log('Mensaje enviado', info.messageId);
    
