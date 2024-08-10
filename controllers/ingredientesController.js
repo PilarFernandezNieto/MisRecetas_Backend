@@ -19,7 +19,7 @@ const creaIngrediente = async (request, response) => {
   } catch (error) {
     if (error.code === 11000) {
       return response.status(400).json({
-        msg: error.errmsg
+        msg: "El ingrediente ya existe"
       });
     } else {
       res.status(500).json({ msg: error.message });
